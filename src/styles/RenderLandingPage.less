@@ -41,16 +41,36 @@
     font-size: 1.2rem;
 }
 
-// .graphs-section {
-//  ADD THIS BACK IN WHEN YOU HAVE THE GRAPHS SECTION
-// }
-
+.graphs-section { // aligning the graphs in a row for organization
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: justify;
+    justify-content: space-between;
+    padding: 50px;
+} 
+.graph { // moving the text below the graphs they represent
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: justify;
+    img {
+        height: 200px;
+    }
+} 
 .view-more-data-btn-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center; // making the buttons container a flex with a center row for the buttons to be aligned with each other
+    padding-left: 2%;
     height: 44px;
     width: 180px;
     margin: 0 auto;
     text-align: center;
     margin-bottom: 10%;
+    button {
+        margin: 5%;
+    }
 }
 
 .middle-section {
@@ -75,9 +95,48 @@
     font-size: 1.4rem;
 }
 
-// .bottom-section {
-//      ADD THIS BACK IN WHEN YOU HAVE A BOTTOM SECTION
-// }
+.bottom-section {
+    padding-top: 100px;
+    .bottom-h1 {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        text-align: justify;
+        justify-content: center;
+        padding-bottom: 80px;
+        font-size: 3.5rem;
+    }
+    .top { //to neatly seperate the 3 text paragraghs from the rest of the bottom
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        text-align: justify;
+        justify-content: space-between;
+        height: 200px
+    }
+    .data { // having the data align to make a neat representation
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: justify;
+        justify-content: center;
+        padding-left: 40px;
+        padding-right: 40px;
+        
+        h2 {
+            font-size: 2.5rem;
+        }
+        h3 {
+            text-align: center;
+        }
+    }
+    .button-wrapper { // the wrapper containing the button
+        display: flex;
+        padding-top: 50px;
+        justify-content: center;
+
+    }
+}
 
 .back-to-top {
     width: 8%;
