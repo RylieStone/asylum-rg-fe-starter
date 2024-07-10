@@ -10,10 +10,9 @@ import YearLimitsSelect from './YearLimitsSelect';
 import ViewSelect from './ViewSelect';
 import axios from 'axios';
 import { resetVisualizationQuery } from '../../../state/actionCreators';
-import test_data from '../../../data/test_data.json';
 import { colors } from '../../../styles/data_vis_colors';
 import ScrollToTopOnMount from '../../../utils/scrollToTopOnMount';
-
+ //
 const { background_color } = colors;
 
 function GraphWrapper(props) {
@@ -50,7 +49,7 @@ function GraphWrapper(props) {
         break;
     }
   }
-  function updateStateWithNewData(years, view, office, stateSettingCallback) {
+  async function updateStateWithNewData(years, view, office, stateSettingCallback) {
     /*
           _                                                                             _
         |                                                                                 |
@@ -74,8 +73,18 @@ function GraphWrapper(props) {
     */
 
     if (office === 'all' || !office) {
-      axios
-        .get(process.env.REACT_APP_API_URI, {
+      let citizenshipData;
+      await axios.get('https://hrf-asylum-be-b.herokuapp.com/cases/citizenshipSummary', { //grabs citizenship summary
+        params: {
+          from: years[0],
+          to: years[1],
+          office: office,
+        },
+        }).then(result => {
+          citizenshipData = result.data; //brings it into a variable for later use
+        }).catch(err => console.log(err));
+      await axios
+        .get(`https://hrf-asylum-be-b.herokuapp.com/cases/fiscalSummary`, {
           // mock URL, can be simply replaced by `${Real_Production_URL}/summary` in prod!
           params: {
             from: years[0],
@@ -83,14 +92,26 @@ function GraphWrapper(props) {
           },
         })
         .then(result => {
-          stateSettingCallback(view, office, test_data); // <-- `test_data` here can be simply replaced by `result.data` in prod!
+            const combined = {...result.data, citizenshipResults: citizenshipData}; //combines the variable data with the fiscal data before sending to the graghs
+            stateSettingCallback(view, office, [combined]); // <-- `test_data` here can be simply replaced by `result.data` in prod!
         })
         .catch(err => {
           console.error(err);
         });
     } else {
+      let citizenshipData;
+      await axios.get('https://hrf-asylum-be-b.herokuapp.com/cases/citizenshipSummary', {
+        params: {
+          from: years[0],
+          to: years[1],
+          office: office,
+        },
+        }).then(result => {
+          console.log(result.data);
+          citizenshipData = result.data;
+        }).catch(err => console.log(err));
       axios
-        .get(process.env.REACT_APP_API_URI, {
+        .get(`https://hrf-asylum-be-b.herokuapp.com/cases/fiscalSummary`, {
           // mock URL, can be simply replaced by `${Real_Production_URL}/summary` in prod!
           params: {
             from: years[0],
@@ -99,7 +120,8 @@ function GraphWrapper(props) {
           },
         })
         .then(result => {
-          stateSettingCallback(view, office, test_data); // <-- `test_data` here can be simply replaced by `result.data` in prod!
+          const combined = {...result.data, citizenshipResults: citizenshipData};
+          stateSettingCallback(view, office, [combined]); // <-- `test_data` here can be simply replaced by `result.data` in prod!
         })
         .catch(err => {
           console.error(err);
